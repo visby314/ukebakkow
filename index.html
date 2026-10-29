@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>間違えた問題 受け箱</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="受け箱">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f7f7f5">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<style>
+/* Layout: Ankiのカードと同じ見た目の1列フォーム。上に処理待ちの件数、3つの画面を切り替え */
+:root{
+  --bg:#f7f7f5; --paper:#ffffff; --ink:#1f2328; --muted:#6b7280; --rule:#d0d0cc; --rule-soft:#e2e2dd; --tint:#eceff3;
+  --accent:#1d4ed8; --accent-soft:#e3efff; --ok:#15803d; --ok-soft:#e3f6e9; --warn:#c2410c; --warn-soft:#fff0de;
+  --f-display:"Disp","Hiragino Mincho ProN","Yu Mincho",serif;
+  --f-body:"Yu Gothic UI","Hiragino Sans","Meiryo",sans-serif;
+  color-scheme:light;
+}
+@font-face{font-family:"Disp";src:url(data:font/woff;base64,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) format("woff");font-display:swap}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6;-webkit-tap-highlight-color:transparent;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-top:calc(env(safe-area-inset-top,0px) + 16px);padding-bottom:calc(env(safe-area-inset-bottom,0px) + 40px)}
+.wrap{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--rule);padding-bottom:10px}
+h1{margin:0;font-family:var(--f-display);font-weight:400;font-size:clamp(1.6rem,7vw,2.1rem);line-height:1.15;text-wrap:balance}
+.inboxcount{display:flex;align-items:baseline;gap:4px;white-space:nowrap}
+.inboxcount .lbl{font-size:.72rem;font-weight:700;color:var(--muted)}
+.inboxcount .n{font-family:var(--f-display);font-size:2.4rem;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums}
+.inboxcount .u{font-size:.75rem;font-weight:700}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--tint);border-radius:999px;padding:4px}
+.segbtn{font:inherit;font-size:.9rem;font-weight:700;border:0;background:transparent;color:var(--muted);padding:7px 4px;border-radius:999px;cursor:pointer}
+.segbtn[aria-selected="true"]{background:var(--paper);color:var(--ink);box-shadow:0 1px 2px rgb(0 0 0 / .08)}
+.banner{margin:0;background:var(--warn-soft);color:var(--warn);font-size:.85rem;font-weight:700;padding:10px 14px;border-radius:10px}
+.banner[hidden],.view[hidden]{display:none}
+.card{background:var(--paper);border:1px solid var(--rule-soft);border-left:5px solid var(--accent);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:16px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.flabel{font-size:.85rem;font-weight:700}
+.flabel em{font-style:normal;font-size:.7rem;color:#fff;background:var(--accent);border-radius:999px;padding:0 7px;margin-left:4px;vertical-align:1px}
+.pick{display:block;text-align:center;font-weight:700;color:var(--accent);background:var(--accent-soft);border:1px dashed var(--accent);border-radius:10px;padding:12px;cursor:pointer}
+.pick.sub{color:var(--muted);background:var(--tint);border-color:var(--rule)}
+.thumbs{display:flex;flex-wrap:wrap;gap:8px}
+.thumbs:empty{display:none}
+.th{position:relative}
+.th img{width:72px;height:72px;object-fit:cover;border-radius:8px;border:1px solid var(--rule-soft);display:block}
+.rm{position:absolute;top:-6px;right:-6px;width:24px;height:24px;border-radius:50%;border:0;background:var(--ink);color:#fff;font-size:14px;line-height:24px;padding:0;cursor:pointer}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;font-size:.85rem;font-weight:700;border:1px solid var(--rule-soft);background:var(--paper);color:var(--muted);border-radius:999px;padding:6px 12px;cursor:pointer}
+.chip[aria-checked="true"],.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+input[type=text],input[type=password],textarea{font:inherit;font-size:16px;width:100%;color:var(--ink);background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:9px 11px}
+textarea{resize:vertical}
+input:focus-visible,textarea:focus-visible,button:focus-visible,.pick:focus-within{outline:2px solid var(--accent);outline-offset:2px}
+.primary{font:inherit;font-weight:700;font-size:1rem;color:#fff;background:var(--accent);border:0;border-radius:999px;padding:12px;cursor:pointer}
+.primary:active{opacity:.85}
+.tool{font:inherit;font-size:.85rem;font-weight:700;color:var(--accent);background:var(--paper);border:1px solid var(--accent);border-radius:999px;padding:6px 12px;cursor:pointer}
+.msg{margin:0;font-size:.85rem;font-weight:700;color:var(--accent);min-height:1.4em}
+.note{margin:0;font-size:.85rem;color:var(--muted)}
+.note b{color:var(--ink)}
+.listhead{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+ol.items{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.item{display:grid;grid-template-columns:56px 1fr auto;gap:10px;align-items:center;background:var(--paper);border:1px solid var(--rule-soft);border-radius:10px;padding:8px 10px}
+.item img{width:56px;height:56px;object-fit:cover;border-radius:6px}
+.item .meta{min-width:0}
+.item .t{font-weight:700;font-size:.9rem;overflow-wrap:anywhere}
+.item .s{font-size:.75rem;color:var(--muted);overflow-wrap:anywhere}
+.item .m{font-size:.78rem;border-top:1px dashed var(--rule-soft);margin-top:4px;padding-top:4px;overflow-wrap:anywhere}
+.pill{font-size:.7rem;font-weight:700;border-radius:999px;padding:1px 9px;white-space:nowrap}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.wait{background:var(--warn-soft);color:var(--warn)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="head">
+    <h1>間違えた問題 受け箱</h1>
+    <div class="inboxcount" id="inboxCount" aria-live="polite"><span class="lbl">受け箱で処理待ち</span><span class="n" id="inboxN">–</span><span class="u">件</span></div>
+  </header>
+
+  <nav class="seg" role="tablist" aria-label="画面">
+    <button type="button" class="segbtn" role="tab" data-view="add" aria-selected="true">登録</button>
+    <button type="button" class="segbtn" role="tab" data-view="list" aria-selected="false">送った問題</button>
+    <button type="button" class="segbtn" role="tab" data-view="settings" aria-selected="false">設定</button>
+  </nav>
+
+  <p class="banner" id="setupBanner" hidden>まだ送り先が設定されていません。「設定」でリポジトリと鍵を入れてください。登録した問題はこの端末に保存され、設定が済むと送られます。</p>
+
+  <!-- 登録 -->
+  <section class="view" id="view-add">
+    <form id="addForm" class="card" novalidate>
+      <div class="field">
+        <span class="flabel">問題の写真 <em>必須</em></span>
+        <label class="pick" for="ph-problem">写真を撮る・選ぶ</label>
+        <input id="ph-problem" type="file" accept="image/*" multiple data-kind="problem" hidden>
+        <div class="thumbs" id="th-problem"></div>
+      </div>
+      <div class="field">
+        <span class="flabel">自分の解答の写真</span>
+        <label class="pick sub" for="ph-mine">写真を撮る・選ぶ</label>
+        <input id="ph-mine" type="file" accept="image/*" multiple data-kind="mine" hidden>
+        <div class="thumbs" id="th-mine"></div>
+      </div>
+      <div class="field">
+        <span class="flabel">模範解答の写真</span>
+        <label class="pick sub" for="ph-answer">写真を撮る・選ぶ</label>
+        <input id="ph-answer" type="file" accept="image/*" multiple data-kind="answer" hidden>
+        <div class="thumbs" id="th-answer"></div>
+      </div>
+
+      <div class="field">
+        <span class="flabel">科目</span>
+        <div class="chips" id="subjects" role="radiogroup" aria-label="科目"></div>
+      </div>
+      <div class="field">
+        <label class="flabel" for="source">出典</label>
+        <input id="source" type="text" list="sourceList" placeholder="例：河野塾 数A 演習1-3" autocomplete="off">
+        <datalist id="sourceList"></datalist>
+      </div>
+      <div class="field">
+        <span class="flabel">間違えた原因（いくつでも）</span>
+        <div class="chips" id="reasons" aria-label="間違えた原因"></div>
+      </div>
+      <div class="field">
+        <label class="flabel" for="memo">メモ</label>
+        <textarea id="memo" rows="3" placeholder="例：nが偶数のときの場合分けを忘れた"></textarea>
+      </div>
+      <button type="submit" class="primary" id="submitBtn">受け箱に送る</button>
+      <p class="msg" id="addMsg" role="status"></p>
+    </form>
+  </section>
+
+  <!-- 送った問題 -->
+  <section class="view" id="view-list" hidden>
+    <div class="listhead">
+      <p class="note" id="queueNote"></p>
+      <button type="button" class="tool" id="retryBtn" hidden>まだ送れていない分を送る</button>
+    </div>
+    <ol class="items" id="items"></ol>
+  </section>
+
+  <!-- 設定 -->
+  <section class="view" id="view-settings" hidden>
+    <form id="setForm" class="card" novalidate>
+      <p class="note">送り先は、GitHubの<b>非公開</b>リポジトリです。鍵（トークン）はこの端末の中だけに保存されます。</p>
+      <div class="field"><label class="flabel" for="owner">ユーザー名</label><input id="owner" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="visby314"></div>
+      <div class="field"><label class="flabel" for="repo">リポジトリ名</label><input id="repo" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="study-inbox"></div>
+      <div class="field"><label class="flabel" for="token">鍵（Fine-grained token）</label><input id="token" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="github_pat_…"></div>
+      <div class="row2">
+        <button type="submit" class="primary">保存してつながるか確かめる</button>
+      </div>
+      <p class="msg" id="setMsg" role="status"></p>
+    </form>
+  </section>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  const SUBJECTS = ['数学','物理','化学','英語','国語','その他'];
+  const REASONS = ['方針が立たない','計算ミス','条件の見落とし','論証の不備','知識不足','問題の読み違い','時間切れ'];
+  const SOURCES = ['河野塾 数A','河野塾 数B','河野塾 数C','河野塾 数Ⅲ','ハイレベル物理','ハイレベル物理演習','ハイレベル化学','ハイレベル化学演習','化学の新演習','有機構造決定問題集','ハイレベル数学の完全攻略','東大過去問','共通テスト'];
+  const KINDS = ['problem','mine','answer'];
+  const LS = 'study-inbox-settings-v1';
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+  // ---------- 設定 ----------
+  let cfg = {owner:'', repo:'', token:''};
+  try { Object.assign(cfg, JSON.parse(localStorage.getItem(LS) || '{}')); } catch(e) {}
+  const ready = () => !!(cfg.owner && cfg.repo && cfg.token);
+
+  // ---------- IndexedDB（送る前の問題をためておく） ----------
+  let dbp = null;
+  function idb(){
+    if (!dbp) dbp = new Promise((res, rej) => {
+      const r = indexedDB.open('study-inbox', 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('items', {keyPath:'id'});
+      r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+    });
+    return dbp;
+  }
+  async function tx(mode, fn){
+    const d = await idb();
+    return new Promise((res, rej) => {
+      const t = d.transaction('items', mode); const st = t.objectStore('items');
+      const out = fn(st); t.oncomplete = () => res(out && out.result !== undefined ? out.result : out); t.onerror = () => rej(t.error);
+    });
+  }
+  const putItem = it => tx('readwrite', s => s.put(it));
+  const allItems = () => tx('readonly', s => s.getAll());
+
+  // ---------- 写真を縮める ----------
+  async function shrink(file){
+    const url = URL.createObjectURL(file);
+    try {
+      const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
+      const max = 1600, sc = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+      const c = document.createElement('canvas'); c.width = Math.round(img.naturalWidth*sc); c.height = Math.round(img.naturalHeight*sc);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.82));
+      const t = document.createElement('canvas'); const ts = 160 / Math.max(c.width, c.height); t.width = Math.round(c.width*ts); t.height = Math.round(c.height*ts);
+      t.getContext('2d').drawImage(c, 0, 0, t.width, t.height);
+      return {blob, thumb: t.toDataURL('image/jpeg', 0.7)};
+    } finally { URL.revokeObjectURL(url); }
+  }
+
+  // ---------- 登録フォーム ----------
+  const picked = {problem:[], mine:[], answer:[]};
+  let subject = '数学'; const reasons = new Set();
+  $('subjects').innerHTML = SUBJECTS.map(s => `<button type="button" class="chip" role="radio" aria-checked="${s===subject}" data-s="${s}">${s}</button>`).join('');
+  $('reasons').innerHTML = REASONS.map(s => `<button type="button" class="chip" aria-pressed="false" data-r="${s}">${s}</button>`).join('');
+  $('sourceList').innerHTML = SOURCES.map(s => `<option value="${esc(s)}"></option>`).join('');
+  $('subjects').addEventListener('click', e => { const b = e.target.closest('[data-s]'); if (!b) return; subject = b.dataset.s; $('subjects').querySelectorAll('.chip').forEach(x => x.setAttribute('aria-checked', String(x === b))); });
+  $('reasons').addEventListener('click', e => { const b = e.target.closest('[data-r]'); if (!b) return; const r = b.dataset.r; reasons.has(r) ? reasons.delete(r) : reasons.add(r); b.setAttribute('aria-pressed', String(reasons.has(r))); });
+
+  function renderThumbs(kind){
+    $('th-'+kind).innerHTML = picked[kind].map((p,i) => `<span class="th"><img src="${p.thumb}" alt=""><button type="button" class="rm" data-kind="${kind}" data-i="${i}" aria-label="この写真を外す">×</button></span>`).join('');
+  }
+  KINDS.forEach(k => {
+    $('ph-'+k).addEventListener('change', async e => {
+      const files = [...e.target.files]; e.target.value = '';
+      setMsg('addMsg', '写真を読み込み中…');
+      for (const f of files) { try { picked[k].push(await shrink(f)); } catch(err) { setMsg('addMsg', '読み込めない写真がありました。'); } }
+      renderThumbs(k); setMsg('addMsg', '');
+    });
+  });
+  document.querySelector('#addForm').addEventListener('click', e => {
+    const b = e.target.closest('.rm'); if (!b) return;
+    picked[b.dataset.kind].splice(+b.dataset.i, 1); renderThumbs(b.dataset.kind);
+  });
+  function setMsg(id, t){ $(id).textContent = t; }
+
+  $('addForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    if (!picked.problem.length) { setMsg('addMsg', '問題の写真を1枚以上入れてください。'); return; }
+    const now = new Date();
+    const pad = n => String(n).padStart(2,'0');
+    const id = `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}-${Math.random().toString(36).slice(2,6)}`;
+    const item = {
+      id, createdAt: now.toISOString(), subject, source: $('source').value.trim(), reasons: [...reasons], memo: $('memo').value.trim(),
+      photos: Object.fromEntries(KINDS.map(k => [k, picked[k].map(p => p.blob)])),
+      thumb: picked.problem[0].thumb, status: 'pending', sentFiles: []
+    };
+    await putItem(item);
+    KINDS.forEach(k => { picked[k] = []; renderThumbs(k); });
+    reasons.clear(); $('reasons').querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed','false'));
+    $('memo').value = ''; $('source').value = '';
+    setMsg('addMsg', ready() ? '保存しました。送っています…' : '保存しました。設定が済むと送ります。');
+    await renderList();
+    if (ready()) { const ok = await sendAll(); setMsg('addMsg', ok ? '受け箱に送りました。' : 'この端末に保存しました。電波が戻ったら「送った問題」から送れます。'); }
+  });
+
+  // ---------- GitHub ----------
+  const api = (path, opt={}) => fetch(`https://api.github.com/repos/${encodeURIComponent(cfg.owner)}/${encodeURIComponent(cfg.repo)}${path}`, Object.assign({
+    headers: Object.assign({'Authorization': 'Bearer ' + cfg.token, 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28'}, opt.headers || {})
+  }, opt));
+  const b64blob = blob => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.onerror = rej; r.readAsDataURL(blob); });
+  const b64text = t => btoa(unescape(encodeURIComponent(t)));
+  async function putFile(path, content, message){
+    const r = await api(`/contents/${path}`, {method:'PUT', body: JSON.stringify({message, content})});
+    if (r.ok) return true;
+    if (r.status === 422) return true; // 前回の途中で同じファイルが送られている
+    throw new Error('HTTP ' + r.status);
+  }
+
+  let sending = false;
+  async function sendAll(){
+    if (!ready() || sending) return false;
+    sending = true; let allOk = true;
+    try {
+      const items = (await allItems()).filter(i => i.status !== 'sent').sort((a,b) => a.id < b.id ? -1 : 1);
+      for (const it of items) {
+        try {
+          const files = {};
+          for (const k of KINDS) {
+            files[k] = [];
+            for (let i = 0; i < (it.photos[k]||[]).length; i++) {
+              const name = `${k}-${i+1}.jpg`; files[k].push(name);
+              const path = `inbox/${it.id}/${name}`;
+              if (!it.sentFiles.includes(path)) {
+                await putFile(path, await b64blob(it.photos[k][i]), `add ${it.id} ${name}`);
+                it.sentFiles.push(path); await putItem(it);
+              }
+            }
+          }
+          const meta = {app:'study-inbox', v:1, id:it.id, createdAt:it.createdAt, subject:it.subject, source:it.source, reasons:it.reasons, memo:it.memo, files};
+          await putFile(`inbox/${it.id}/meta.json`, b64text(JSON.stringify(meta, null, 2)), `add ${it.id} meta`);
+          it.status = 'sent'; it.sentAt = new Date().toISOString(); it.photos = {}; it.error = '';
+          await putItem(it);
+        } catch(err) {
+          allOk = false; it.error = String(err.message || err); await putItem(it);
+          if (/HTTP 40[13]/.test(it.error)) break;
+        }
+      }
+    } finally { sending = false; await renderList(); refreshCount(); }
+    return allOk;
+  }
+
+  async function refreshCount(){
+    if (!ready()) { $('inboxN').textContent = '–'; return; }
+    try {
+      const r = await api('/contents/inbox');
+      if (r.status === 404) { $('inboxN').textContent = '0'; return; }
+      if (!r.ok) throw 0;
+      const arr = await r.json(); $('inboxN').textContent = String(arr.filter(x => x.type === 'dir').length);
+    } catch(e) { /* 電波がないときはそのまま */ }
+  }
+
+  // ---------- 送った問題 ----------
+  async function renderList(){
+    const items = (await allItems()).sort((a,b) => a.id < b.id ? 1 : -1);
+    const pending = items.filter(i => i.status !== 'sent');
+    $('retryBtn').hidden = !pending.length || !ready();
+    $('queueNote').textContent = pending.length ? `まだ送れていない問題が${pending.length}件あります。` : (items.length ? 'すべて受け箱に送ってあります。' : 'まだ登録した問題はありません。「登録」から写真を入れてください。');
+    $('items').innerHTML = items.slice(0, 60).map(it => {
+      const d = new Date(it.createdAt);
+      const when = `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+      const st = it.status === 'sent' ? '<span class="pill ok">送信済み</span>' : `<span class="pill wait">${it.error ? '送れていません' : '送信待ち'}</span>`;
+      return `<li class="item"><img src="${it.thumb}" alt=""><div class="meta"><div class="t">${esc(it.source || '出典なし')}</div>` +
+        `<div class="s">${esc(it.subject)}・${when}${it.reasons.length ? '・' + esc(it.reasons.join('、')) : ''}</div>${it.memo ? `<div class="m">${esc(it.memo)}</div>` : ''}</div>${st}</li>`;
+    }).join('');
+    $('setupBanner').hidden = ready();
+  }
+  $('retryBtn').addEventListener('click', async () => { $('queueNote').textContent = '送っています…'; await sendAll(); });
+
+  // ---------- 設定画面 ----------
+  $('owner').value = cfg.owner; $('repo').value = cfg.repo; $('token').value = cfg.token;
+  $('setForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    cfg = {owner: $('owner').value.trim(), repo: $('repo').value.trim(), token: $('token').value.trim()};
+    try { localStorage.setItem(LS, JSON.stringify(cfg)); } catch(err) {}
+    if (!ready()) { setMsg('setMsg', '3つとも入れてください。'); return; }
+    setMsg('setMsg', '確かめています…');
+    try {
+      const r = await api('');
+      if (r.status === 401) { setMsg('setMsg', '鍵が正しくないか、期限が切れています。'); return; }
+      if (r.status === 404) { setMsg('setMsg', 'リポジトリが見つかりません。名前と、鍵にこのリポジトリの許可を付けたかを確認してください。'); return; }
+      if (!r.ok) { setMsg('setMsg', 'GitHubにつながりませんでした（' + r.status + '）。'); return; }
+      const repo = await r.json();
+      if (!repo.private) { setMsg('setMsg', 'このリポジトリは公開になっています。問題集の写真を入れるので、非公開に変えてから使ってください。'); return; }
+      setMsg('setMsg', 'つながりました。登録した問題はこのリポジトリの inbox フォルダに入ります。');
+      await renderList(); sendAll();
+    } catch(err) { setMsg('setMsg', 'GitHubにつながりませんでした。電波を確認してください。'); }
+  });
+
+  // ---------- 画面切り替え ----------
+  document.querySelector('.seg').addEventListener('click', e => {
+    const b = e.target.closest('[data-view]'); if (!b) return;
+    document.querySelectorAll('.segbtn').forEach(x => x.setAttribute('aria-selected', String(x === b)));
+    document.querySelectorAll('.view').forEach(v => v.hidden = v.id !== 'view-' + b.dataset.view);
+    if (b.dataset.view === 'list') renderList();
+  });
+
+  window.addEventListener('online', () => sendAll());
+  renderList().then(() => { refreshCount(); sendAll(); });
+  try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch(e) {}
+  if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
+})();
+</script>
+</body>
+</html>
